@@ -1,4 +1,4 @@
-package com.paulohenry.zup.nbdigital.errors;
+package com.paulohenry.zup.nbdigital.exceptions;
 
 
 import java.util.Arrays;

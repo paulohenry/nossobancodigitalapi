@@ -1,37 +1,64 @@
 package com.paulohenry.zup.nbdigital.controllers.register;
 
 
-import javax.validation.Valid;
 
-import com.paulohenry.zup.nbdigital.entities.local.LocalRegisterEntity3;
+import org.springframework.http.HttpHeaders;
+
+
+import com.paulohenry.zup.nbdigital.entities.local.LocalRegisterEntity1;
+import com.paulohenry.zup.nbdigital.localstorage.LocalRegisterRepository1;
 import com.paulohenry.zup.nbdigital.localstorage.LocalRegisterRepository3;
+import com.paulohenry.zup.nbdigital.utils.UpDataService;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-@RestController
+import lombok.Data;
+
+
+@Data
 @RequestMapping("/user/new/step3")
+@CrossOrigin("http://localhost:8081")
 public class RegisterUserController3 {
+ 
+	
+	private final LocalRegisterRepository1 storage1;
+	private final UpDataService storage3;
+  private final LocalRegisterRepository3 entity3;
+   
   
-  private final LocalRegisterRepository3 storage;
-  
-  
-  @Autowired
-  public RegisterUserController3(LocalRegisterRepository3 storage) {
-    this.storage = storage;    
-  }
+	
+	@PostMapping
+	public ResponseEntity<String> uploadFile(
+			@RequestParam("cpf")String cpf,
+			@RequestParam("file") MultipartFile file,
+			RedirectAttributes redirectAttributes) {	
 
-    @RequestMapping(value="/passo3", method={RequestMethod.POST})
-    @ResponseStatus(HttpStatus.CREATED)
-    public String step3RegisterPhoto(@PathVariable("cpf") @RequestBody @Valid LocalRegisterEntity3 user){
-      return "aqui vai salvar uma foto";
-     }   
-
+	LocalRegisterEntity1 res =  storage1.findOneByCpf(cpf);
+	if(res.getCpf()==null){
+		HttpHeaders responseHeaders = new HttpHeaders();
+		responseHeaders.set("location", "/user/new/step1");  
+		return 
+		ResponseEntity.status(201)
+									.headers(responseHeaders)
+									.body("Você deve iniciar a proposta pelo passo 1");           
+		}else{ 	
+			try{
+				storage3.store(file, entity3);
+			HttpHeaders responseHeaders = new HttpHeaders();
+						responseHeaders.set("location", "/user/new/confirm?cpf=Seu Cpf Cadastrado");          
+				return  ResponseEntity.status(201)
+													.headers(responseHeaders)
+													.body("Avance para o próximo passo confirme sua proposta, url no header location");
+			}catch(Exception e){			
+				return ResponseEntity.status(400).body("Erro ao tentar salvar a imagem");
+			}
+		
+		}
+ }
 }
