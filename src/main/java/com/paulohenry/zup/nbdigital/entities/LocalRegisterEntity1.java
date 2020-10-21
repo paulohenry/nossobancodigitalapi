@@ -1,4 +1,4 @@
-package com.paulohenry.zup.nbdigital.entities.local;
+package com.paulohenry.zup.nbdigital.entities;
 
 
 
@@ -9,8 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
-
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 
@@ -24,10 +23,15 @@ import org.hibernate.validator.constraints.br.CPF;
 
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 
-@Entity
+
 @Data
+@Getter
+@Setter
+@Entity
 @Table(name="step1")
 public class LocalRegisterEntity1{
   
@@ -57,9 +61,17 @@ public class LocalRegisterEntity1{
     @NotNull(message="{campo.email.obrigatorio}")
     private String email;
 
-    @Column(nullable=true, length=10)
+    @Column(length=10)
     @ValidationAge(message="{campo.nascimento.idade}")
     @NotNull(message="{campo.nascimento.obrigatorio}")
     private String nascimento;
+    
+    @Column()
+    private Boolean confirm;
+
+    @PrePersist
+    protected void confirmFalseFirst(){
+         setConfirm(false);
+    }
     
 }

@@ -1,4 +1,4 @@
-package com.paulohenry.zup.nbdigital.entities.local;
+package com.paulohenry.zup.nbdigital.entities;
 
 
 import javax.persistence.Column;
@@ -29,31 +29,43 @@ public class LocalRegisterEntity3 {
   @Lob
   private byte[] data;
 
+  @Column(length=14, unique=true)
+  private String cpf; 
+
     public LocalRegisterEntity3() {}
 
-    public LocalRegisterEntity3(String name, String type, byte[] data) {
+    public LocalRegisterEntity3(String name, String type, byte[] data, String cpf) {
         this.name = name;
         this.type = type;
         this.data = data;
+        this.cpf = cpf;
       }
 
       public Integer getId() {
         return id;
       }
+      
+      public String getCpf() {
+        return cpf;
+      }
     
-      public String getName() {
+      public void setCpf(String cpf) {
+        this.cpf = cpf;
+      }
+
+      public String getNameImage() {
         return name;
       }
     
-      public void setName(String name) {
+      public void setNameImage(String name) {
         this.name = name;
       }
     
-      public String getType() {
+      public String getTypeImage() {
         return type;
       }
     
-      public void setType(String type) {
+      public void setTypeImage(String type) {
         this.type = type;
       }
     

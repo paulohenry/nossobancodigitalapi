@@ -5,25 +5,23 @@ package com.paulohenry.zup.nbdigital.controllers.register;
 import org.springframework.http.HttpHeaders;
 
 
-import com.paulohenry.zup.nbdigital.entities.local.LocalRegisterEntity1;
-import com.paulohenry.zup.nbdigital.localstorage.LocalRegisterRepository1;
-import com.paulohenry.zup.nbdigital.localstorage.LocalRegisterRepository3;
+import com.paulohenry.zup.nbdigital.entities.LocalRegisterEntity1;
+import com.paulohenry.zup.nbdigital.repositories.LocalRegisterRepository1;
+import com.paulohenry.zup.nbdigital.repositories.LocalRegisterRepository3;
 import com.paulohenry.zup.nbdigital.utils.UpDataService;
-
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 import lombok.Data;
 
 
 @Data
-@RequestMapping("/user/new/step3")
-@CrossOrigin("http://localhost:8081")
+@RestController
 public class RegisterUserController3 {
  
 	
@@ -33,12 +31,10 @@ public class RegisterUserController3 {
    
   
 	
-	@PostMapping
+	@PostMapping("/user/new/step3")
 	public ResponseEntity<String> uploadFile(
 			@RequestParam("cpf")String cpf,
-			@RequestParam("file") MultipartFile file,
-			RedirectAttributes redirectAttributes) {	
-
+			@RequestParam("image") MultipartFile file) {	
 	LocalRegisterEntity1 res =  storage1.findOneByCpf(cpf);
 	if(res.getCpf()==null){
 		HttpHeaders responseHeaders = new HttpHeaders();
@@ -49,12 +45,13 @@ public class RegisterUserController3 {
 									.body("Você deve iniciar a proposta pelo passo 1");           
 		}else{ 	
 			try{
-				storage3.store(file, entity3);
+				System.out.println(file);
+				storage3.store(file, cpf);
 			HttpHeaders responseHeaders = new HttpHeaders();
-						responseHeaders.set("location", "/user/new/confirm?cpf=Seu Cpf Cadastrado");          
+						responseHeaders.set("location", "/user/check?cpf=Seu Cpf Cadastrado");          
 				return  ResponseEntity.status(201)
 													.headers(responseHeaders)
-													.body("Avance para o próximo passo confirme sua proposta, url no header location");
+													.body("Avance para o próximo passo confirme sua proposta envie um GET, url no header location");
 			}catch(Exception e){			
 				return ResponseEntity.status(400).body("Erro ao tentar salvar a imagem");
 			}

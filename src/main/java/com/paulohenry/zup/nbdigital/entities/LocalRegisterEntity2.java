@@ -1,4 +1,4 @@
-package com.paulohenry.zup.nbdigital.entities.local;
+package com.paulohenry.zup.nbdigital.entities;
 
 
 
@@ -7,8 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -19,8 +17,9 @@ import lombok.Data;
 
 
 
-@Entity
+
 @Data
+@Entity
 @Table(name="step2")
 public class LocalRegisterEntity2{
 
@@ -53,7 +52,6 @@ public class LocalRegisterEntity2{
     @NotNull(message="{campo.estado.obrigatorio}")
     private String estado;
 
-    @ManyToOne
-    @JoinColumn(name = "id_user")
-    private LocalRegisterEntity1 localRegisterEntity1; 
+    @Column(length=14, unique=true)
+    private String cpf; 
 }
